@@ -4,11 +4,11 @@
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'userportaldev',
-        'USER': 'userportaldev',
-        'PASSWORD': 'changeme',
-        'HOST': 'dbserver',
-        'PORT': '3128',
+        'NAME': os.environ.get('PORTAL_DB_NAME'),
+        'USER': os.environ.get('PORTAL_DB_USER'),
+        'PASSWORD': os.environ.get('PORTAL_DB_PASS'),
+        'HOST': os.environ.get('PORTAL_DB_HOST'),
+        'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',
             'use_unicode': True,
@@ -16,11 +16,11 @@ DATABASES = {
     },
     'slurm': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'slurmdb',
-        'USER': 'slurm-stats',
-        'PASSWORD': 'changeme',
-        'HOST': 'dbserver',
-        'PORT': '3128',
+        'NAME': os.environ.get('SLURM_DB_NAME'),
+        'USER': os.environ.get('SLURM_DB_USER'),
+        'PASSWORD': os.environ.get('SLURM_DB_PASS'),
+        'HOST': os.environ.get('SLURM_DB_HOST'),
+        'PORT': '3306',
         'OPTIONS': {
         },
     },

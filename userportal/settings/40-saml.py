@@ -16,7 +16,7 @@ SAML_CREATE_UNKNOWN_USER = True
 SAML_CONFIG = {
     'debug': 1,
     'xmlsec_binary': '/usr/bin/xmlsec1',
-    'entityid': 'http://simon.dev/saml2/metadata/',
+    'entityid': 'https://portal.cluster.paice-ua.com/saml2/metadata/',
 
     'allow_unknown_attributes': True,
 
@@ -52,16 +52,16 @@ SAML_CONFIG = {
     },
 
     'metadata': {
-        'local': ['/opt/idp_metadata.xml'],  # need to remove the POST SingleSignOnService from shibboleth metadata, only redirect seems to work
+        'local': ['/opt/idp/idp_metadata.xml'],  # need to remove the POST SingleSignOnService from shibboleth metadata, only redirect seems to work
     },
 
     # Signing
-    'key_file': '/opt/private.key',  # private part
-    'cert_file': '/opt/public.cert',  # public part
+    'key_file': '/secrets/private-key/private.key',  # private part
+    'cert_file': '/opt/idp/public.cert',  # public part
 
     # Encryption
     'encryption_keypairs': [{
-        'key_file': '/opt/private.key',  # private part
-        'cert_file': '/opt/public.cert',  # public part
+        'key_file': '/secrets/private-key/private.key',  # private part
+        'cert_file': '/opt/idp/public.cert',  # public part
     }],
 }
