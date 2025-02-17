@@ -3,7 +3,7 @@ FROM ubuntu:24.04
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apt-get update && apt-get install -y tzdata && apt install -y python3.12 python3-pip python3-dev python3.12-venv libpq-dev nginx libmysqlclient-dev pkg-config build-essential git libsasl2-dev libldap2-dev libssl-dev gettext wget
+RUN apt-get update && apt-get install -y tzdata && apt install -y python3.12 python3-pip python3-dev python3.12-venv libpq-dev nginx libmysqlclient-dev pkg-config build-essential libsasl2-dev libldap2-dev libssl-dev xmlsec1 gettext git sssd sssd-tools
 
 WORKDIR /opt/userportal
 
