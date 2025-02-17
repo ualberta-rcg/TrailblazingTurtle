@@ -144,6 +144,7 @@ slurm_jobscripts/slurm_jobscripts.ini
 private.key
 public.cert
 idp_metadata.xml
+idp/
 
 .DS_Store
 .site/

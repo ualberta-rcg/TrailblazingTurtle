@@ -18,13 +18,13 @@ EXPORTER_SAMPLING_RATE = {
     'libvirtd_exporter': 30,
 }
 
-CLUSTER_NAME = 'narval'  # used for slurm stats
-STORAGE_NAME = 'narval-storage'
-COMPUTE_NAME = 'narval'  # narval-compute or narval-gpu
+CLUSTER_NAME = 'eureka'  # used for slurm stats
+STORAGE_NAME = 'eureka-storage'
+COMPUTE_NAME = 'eureka'  # narval-compute or narval-gpu
 LUSTRE_FS_NAMES = ['lustre05', 'lustre06', 'lustre07']
 LOGINS = {
-    'narval1': {
-        'network_interface': 'eno34',
+    'eureka-front.cluster.paice-ua.com': {
+        'network_interface': 'eth0',
     },
     'narval2': {
         'network_interface': 'eno34',
@@ -50,7 +50,7 @@ DTNS = {
 
 # value used in the next variables, not showned in the UI, can be removed
 HARDWARE_OVERHEAD = 1.10  # cables, racks, etc.
-CURRENCY_CONVERSION = 1.25  # USD to CAD conversion
+CURRENCY_CONVERSION = 1.35  # USD to CAD conversion
 
 # Can be set to None to disable the reporting
 AMORTIZATION_YEARS = 5  # servers are amortized over 5 years
@@ -81,28 +81,22 @@ SLURM_TRES = {
     '1001=': 'NVIDIA A100-SXM4-40GB',
 }
 
-CLUSTER_NAME_TITLE = 'Narval'
+CLUSTER_NAME_TITLE = 'Eureka'
 FAVICON = 'https://object-arbutus.cloud.computecanada.ca/userportal-public/narval.png'
 
 CLUSTER_INTRO = """
-<p>Narval is a general purpose cluster designed for a variety of workloads; it is located at the <a href="https://www.etsmtl.ca/en/home">École de technologie supérieure in Montreal</a> and is managed by <a href="https://www.calculquebec.ca/">Calcul Québec</a>. The cluster is named in honour of the <a href="https://en.wikipedia.org/wiki/Narwhal">narwhal</a>, a species of whale which has occasionally been observed in the Gulf of St. Lawrence.</p>
-
-<p>This cluster is composed of over 80720 cores and 636 GPUs, all nodes are connected at 100Gb/s.</p>
-
-<p>This portal is intended for our users, the menu on the left provides multiple tools to measure job performance and current cluster utilization</p>
-
-<p><a href="https://docs.computecanada.ca/wiki/Narval/">Documentation</a></p>
+<p>Eureka is a cluster.</p>
 """
 
 CLOUD_ALLOCATIONS_FILE = '/var/www/userportal/projects-rac2022.yml'
 
 # Links in the menu
-EXTERNAL_LINKS = []
-#EXTERNAL_LINKS = [
+#EXTERNAL_LINKS = []
+EXTERNAL_LINKS = [
 #    {'name': 'Documentation', 'url': 'https://docs.alliancecan.ca/wiki/Narval', 'icon': 'book'},
 #    {'name': 'Globus', 'url': 'https://app.globus.org/file-manager?origin_id=a1713da6-098f-40e6-b3aa-034efe8b6e5b', 'icon': 'globe'},
-#    {'name': 'JupyterHub', 'url': 'https://jupyterhub.narval.calculquebec.ca', 'icon': 'terminal'},
-#]
+    {'name': 'JupyterHub', 'url': 'https://jupyter.cluster.paice-ua.com', 'icon': 'terminal'},
+]
 
 # Links to other portals, under external links. 
 # The path parameter enable compatibility with other portals by sending the user to the same page in the other portal

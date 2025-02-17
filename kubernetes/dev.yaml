@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: userportal
-        image: ghcr.io/guilbaults/userportal:latest
+        image: karimali3/userportal:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -52,6 +52,61 @@ spec:
             port: 8000
           periodSeconds: 5
           timeoutSeconds: 5
+        env:
+          - name: WORKERS
+            value: 2
+          - name: THREADS
+            value: 2
+          - name: PORTAL_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: portaldb
+                optional: false
+          - name: PORTAL_DB_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: portaldb
+                optional: false
+          - name: PORTAL_DB_PASS
+            valueFrom:
+              secretKeyRef:
+                key: pass
+                name: portaldb
+                optional: false
+          - name: PORTAL_DB_NAME
+            valueFrom:
+              secretKeyRef:
+                key: name
+                name: portaldb
+                optional: false
+          - name: SLURM_DB_HOST
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: slurmdb
+                optional: false
+          - name: SLURM_DB_USER
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: slurmdb
+                optional: false
+          - name: SLURM_DB_PASS
+            valueFrom:
+              secretKeyRef:
+                key: pass
+                name: slurmdb
+                optional: false
+          - name: SLURM_DB_NAME
+            valueFrom:
+              secretKeyRef:
+                key: name
+                name: slurmdb
+                optional: false
+          - name: PROMETHEUS_LOC
+            value: prometheus-kube-promethus-prometheus.prometheus.svc.cluster.local:9090
 
       - name: nginx-sidecar
         image: nginx:stable
@@ -89,11 +144,11 @@ spec:
       - name: settings
         secret:
           secretName: settings
-          optional: false
+          optional: true
       - name: private-key
         secret:
           secretName: private-key
-          optional: false
+          optional: true
       - name: sql-ca
         configMap:
           name: sql-ca
@@ -101,7 +156,7 @@ spec:
       - name: idp
         configMap:
           name: idp
-          optional: false
+          optional: true
       - name: allocations
         configMap:
           name: allocations
@@ -130,19 +185,27 @@ spec:
     app: userportal
 
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: userportal
+  name: portal
 spec:
-  entryPoints:
-    - web
-  routes:
-  - kind: Rule
-    match: Host(`userportal.dev.dant.computecanada.ca`)
-    services:
-    - name: userportal
-      port: 80
+  ingressClassName: traefik
+  rules:
+    - host: portal.cluster.paice-ua.com
+      http:
+        paths:
+          - backend:
+            service:
+              name: userportal
+              port:
+                number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - portal.cluster.paice-ua.com
+      secretName: portal-cluster-paice-ua-com-tls
 
 ---
 apiVersion: batch/v1

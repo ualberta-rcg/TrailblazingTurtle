@@ -1,9 +1,9 @@
 PROMETHEUS = {
-    'url': 'https://thanos.dant.computecanada.ca',
+    'url': 'http://prometheus-kube-prometheus-prometheus.prometheus.svc.cluster.local:9090',
     'headers': {'Authorization': 'Basic changeme_base64'},
     'filter': {
-        'default': "cluster='narval'",
-        'cloudstats': "cluster='narval', instance=~'blg.*'" # example to override the default filter for a specific module
+        'default': "cluster='eureka'",
+#        'cloudstats': "cluster='narval', instance=~'blg.*'" # example to override the default filter for a specific module
     },
 }
 
