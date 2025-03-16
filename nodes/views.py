@@ -30,6 +30,7 @@ def memory(node):
         hostname_label=settings.PROM_NODE_HOSTNAME_LABEL,
         node=node,
         filter=prom.get_filter())
+    print(query)
     stats = prom.query_prometheus_multiple(query, START, END, step="5m")
     return int(max(stats[0]['y']))
 

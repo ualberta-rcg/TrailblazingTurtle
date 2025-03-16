@@ -9,15 +9,15 @@ AUTHENTICATION_BACKENDS += ['userportal.authentication.staffSaml2Backend']
 
 SAML_SESSION_COOKIE_NAME = 'saml_session'
 SESSION_COOKIE_SECURE = True
+SAML_SESSION_COOKIE_SAMESITE = 'None'
 LOGIN_URL = '/saml2/login/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SAML_CREATE_UNKNOWN_USER = True
 
 SAML_CONFIG = {
     'debug': 1,
-    'xmlsec_binary': '/usr/bin/xmlsec1',
+    'xmlsec_binary': '/usr/local/bin/xmlsec1',
     'entityid': 'https://portal.cluster.paice-ua.com/saml2/metadata/',
-
     'allow_unknown_attributes': True,
 
     'service': {
@@ -28,7 +28,7 @@ SAML_CONFIG = {
 
             'endpoints': {
                 'assertion_consumer_service': [
-                    ('http://localhost:8000/saml2/acs/', saml2.BINDING_HTTP_POST),
+                    ('https://portal.cluster.paice-ua.com/saml2/acs/', saml2.BINDING_HTTP_POST),
                 ],
             },
 
