@@ -1,9 +1,9 @@
 EXPORTER_INSTALLED = [
     'slurm-job-exporter',
     'node_exporter',
-    'redfish_exporter',
-    'lfs_quota',
-    'lustre_exporter',
+#    'redfish_exporter',
+#    'lfs_quota',
+#    'lustre_exporter',
     'slurm_exporter',
     'pcm-sensor-server',
 ]
@@ -23,14 +23,8 @@ STORAGE_NAME = 'eureka-storage'
 COMPUTE_NAME = 'eureka'  # narval-compute or narval-gpu
 LUSTRE_FS_NAMES = ['lustre05', 'lustre06', 'lustre07']
 LOGINS = {
-    'eureka-front.cluster.paice-ua.com': {
+    'eureka-front': {
         'network_interface': 'eth0',
-    },
-    'narval2': {
-        'network_interface': 'eno34',
-    },
-    'narval3': {
-        'network_interface': 'eno34',
     },
 }
 DTNS = {
@@ -72,9 +66,6 @@ NORMAL_CORES_BY_GPU = 48 / 4  # 48 cores for 4 GPUs
 
 # Used to find the current quotas in prometheus
 QUOTA_TYPES = {
-    'home': ('/lustre05/home/', 'project'),
-    'scratch': ('/lustre07/scratch/', 'project'),
-    'project': ('/lustre06/project/', 'project'),
 }
 
 SLURM_TRES = {

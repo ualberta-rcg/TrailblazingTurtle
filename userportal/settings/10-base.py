@@ -71,6 +71,7 @@ MIDDLEWARE += [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'djangosaml2.middleware.SamlSessionMiddleware',
+#    'userportal.middleware.HeaderPrintingMiddleware',
     'csp.middleware.CSPMiddleware',
 ]
 
