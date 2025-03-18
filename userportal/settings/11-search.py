@@ -4,6 +4,7 @@ SEARCH_MAX_RETURNED = 50
 # Filter Users returned in search by their ccServiceAccess attribute
 SEARCH_USER_FILTER_CCSERVICEACCESS = [
     # 'siku'
+    'aip-*'
 ]
 
 SEARCH_INCLUDE_USERS = True

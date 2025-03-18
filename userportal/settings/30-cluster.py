@@ -18,26 +18,23 @@ EXPORTER_SAMPLING_RATE = {
     'libvirtd_exporter': 30,
 }
 
-CLUSTER_NAME = 'eureka'  # used for slurm stats
-STORAGE_NAME = 'eureka-storage'
-COMPUTE_NAME = 'eureka'  # narval-compute or narval-gpu
+CLUSTER_NAME = 'vulcan'  # used for slurm stats
+STORAGE_NAME = 'vulcan-storage'
+COMPUTE_NAME = 'vulcan-gpu'  # narval-compute or narval-gpu
 LUSTRE_FS_NAMES = ['lustre05', 'lustre06', 'lustre07']
 LOGINS = {
-    'eureka-front': {
-        'network_interface': 'eth0',
+    'login1': {
+        'network_interface': 'bond0',
+    },
+    'login2': {
+        'network_interface': 'bond0',
     },
 }
 DTNS = {
-    'narval-dtn1': {
+    'vulcan-dtn1': {
         'network_interface': 'bond0',
     },
-    'narval-dtn2': {
-        'network_interface': 'bond0',
-    },
-    'narval-dtn3': {
-        'network_interface': 'bond0',
-    },
-    'narval-dtn4': {
+    'vulcan-dtn2': {
         'network_interface': 'bond0',
     },
 }
@@ -72,11 +69,11 @@ SLURM_TRES = {
     '1001=': 'NVIDIA A100-SXM4-40GB',
 }
 
-CLUSTER_NAME_TITLE = 'Eureka'
+CLUSTER_NAME_TITLE = 'Vulcan'
 FAVICON = 'https://object-arbutus.cloud.computecanada.ca/userportal-public/narval.png'
 
 CLUSTER_INTRO = """
-<p>Eureka is a cluster.</p>
+<p>Vulcan is the national Amii AI cluster hosted at the University of Alberta.</p>
 """
 
 CLOUD_ALLOCATIONS_FILE = '/var/www/userportal/projects-rac2022.yml'
@@ -86,7 +83,7 @@ CLOUD_ALLOCATIONS_FILE = '/var/www/userportal/projects-rac2022.yml'
 EXTERNAL_LINKS = [
 #    {'name': 'Documentation', 'url': 'https://docs.alliancecan.ca/wiki/Narval', 'icon': 'book'},
 #    {'name': 'Globus', 'url': 'https://app.globus.org/file-manager?origin_id=a1713da6-098f-40e6-b3aa-034efe8b6e5b', 'icon': 'globe'},
-    {'name': 'JupyterHub', 'url': 'https://jupyter.cluster.paice-ua.com', 'icon': 'terminal'},
+    {'name': 'JupyterHub', 'url': 'https://jupyter.vulcan.alliancecan.ca', 'icon': 'terminal'},
 ]
 
 # Links to other portals, under external links. 
