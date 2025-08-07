@@ -1,7 +1,7 @@
 EXPORTER_INSTALLED = [
     'slurm-job-exporter',
     'node_exporter',
-#    'redfish_exporter',
+    'redfish_exporter',
 #    'lfs_quota',
 #    'lustre_exporter',
     'slurm_exporter',
@@ -21,22 +21,22 @@ EXPORTER_SAMPLING_RATE = {
 CLUSTER_NAME = 'vulcan'  # used for slurm stats
 STORAGE_NAME = 'vulcan-storage'
 COMPUTE_NAME = 'vulcan-gpu'  # narval-compute or narval-gpu
-LUSTRE_FS_NAMES = ['lustre05', 'lustre06', 'lustre07']
+#LUSTRE_FS_NAMES = ['lustre05', 'lustre06', 'lustre07']
 LOGINS = {
-    'login1': {
+    'vulcan1': {
         'network_interface': 'bond0',
     },
-    'login2': {
+    'vulcan2': {
         'network_interface': 'bond0',
     },
 }
 DTNS = {
-    'vulcan-dtn1': {
-        'network_interface': 'bond0',
-    },
-    'vulcan-dtn2': {
-        'network_interface': 'bond0',
-    },
+#    'vulcan-dtn1': {
+#        'network_interface': 'bond0',
+#    },
+#    'vulcan-dtn2': {
+#        'network_interface': 'bond0',
+#    },
 }
 
 # out-of-band suffix to append to the hostname
@@ -72,14 +72,14 @@ QUOTA_TYPES = {
 }
 
 SLURM_TRES = {
-    '1001=': 'NVIDIA A100-SXM4-40GB',
+    '1009=': 'NVIDIA L40S',
 }
 
 CLUSTER_NAME_TITLE = 'Vulcan'
-FAVICON = 'https://object-arbutus.cloud.computecanada.ca/userportal-public/narval.png'
+FAVICON = '/static/v.png'
 
 CLUSTER_INTRO = """
-<p>Vulcan is the national Amii AI cluster hosted at the University of Alberta.</p>
+<b>Vulcan</b> is a cluster dedicated to the needs of the Canadian scientific Artificial Intelligence community. Vulcan is located at the University of Alberta and is managed by the University of Alberta and Amii. It is named after the town Vulcan, AB, located in southern Alberta.
 """
 
 CLOUD_ALLOCATIONS_FILE = '/var/www/userportal/projects-rac2022.yml'
@@ -87,9 +87,9 @@ CLOUD_ALLOCATIONS_FILE = '/var/www/userportal/projects-rac2022.yml'
 # Links in the menu
 #EXTERNAL_LINKS = []
 EXTERNAL_LINKS = [
-#    {'name': 'Documentation', 'url': 'https://docs.alliancecan.ca/wiki/Narval', 'icon': 'book'},
+    {'name': 'Documentation', 'url': 'https://docs.alliancecan.ca/wiki/Vulcan', 'icon': 'book'},
 #    {'name': 'Globus', 'url': 'https://app.globus.org/file-manager?origin_id=a1713da6-098f-40e6-b3aa-034efe8b6e5b', 'icon': 'globe'},
-    {'name': 'JupyterHub', 'url': 'https://jupyter.vulcan.alliancecan.ca', 'icon': 'terminal'},
+#    {'name': 'JupyterHub', 'url': 'https://jupyter.vulcan.alliancecan.ca', 'icon': 'terminal'},
 ]
 
 # Links to other portals, under external links. 

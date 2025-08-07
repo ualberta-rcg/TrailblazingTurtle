@@ -19,6 +19,7 @@ import os
 from django.db.models import Q
 
 GPU_MEMORY = {
+    'NVIDIA L40S': 48,
     'GRID V100D-4C': 4,
     'GRID V100D-8C': 8,
     'GRID V100D-16C': 16,
@@ -44,6 +45,7 @@ GPU_MEMORY = {
     '7g.80gb': 80,
 }
 GPU_FULL_POWER = {
+    'NVIDIA L40S': 350,
     'Tesla V100-SXM2-16GB': 300,
     'NVIDIA A100-SXM4-40GB': 400,
     'NVIDIA A100 80GB PCIe': 300,
@@ -65,6 +67,7 @@ GPU_FULL_POWER = {
     '7g.80gb': 400,
 }
 GPU_IDLE_POWER = {
+    'NVIDIA L40S': 45,
     'Tesla V100-SXM2-16GB': 55,
     'NVIDIA A100-SXM4-40GB': 55,
     'NVIDIA A100 80GB PCIe': 55,
@@ -86,6 +89,7 @@ GPU_IDLE_POWER = {
     '7g.80gb': 55,
 }
 GPU_SHORT_NAME = {
+    'NVIDIA L40S': 'L40S',
     'GRID V100D-4C': 'V100 4GB',
     'GRID V100D-8C': 'V100 8GB',
     'GRID V100D-16C': 'V100 16GB',

@@ -17,7 +17,7 @@ SAML_CREATE_UNKNOWN_USER = True
 SAML_CONFIG = {
     'debug': 1,
     'xmlsec_binary': '/usr/local/bin/xmlsec1',
-    'entityid': 'https://portal.cluster.paice-ua.com/saml2/metadata/',
+    'entityid': 'https://portal.vulcan.alliancecan.ca/saml2/metadata/',
     'allow_unknown_attributes': True,
 
     'service': {
@@ -28,7 +28,7 @@ SAML_CONFIG = {
 
             'endpoints': {
                 'assertion_consumer_service': [
-                    ('https://portal.cluster.paice-ua.com/saml2/acs/', saml2.BINDING_HTTP_POST),
+                    ('https://portal.vulcan.alliancecan.ca/saml2/acs/', saml2.BINDING_HTTP_POST),
                 ],
             },
 

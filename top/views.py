@@ -203,7 +203,7 @@ def gpucompute(request):
                 elif stats['cpu_ratio'] < 0.9:
                     waste_badges.append(('warning', _('Cores')))
             if stats['gpu_used'] == float(0):
-                waste_badges.append(('danger', _('GPU ares totally unused')))
+                waste_badges.append(('danger', _('GPUs are totally unused')))
             elif stats['gpu_ratio'] < 0.1:
                 waste_badges.append(('danger', _('GPUs')))
             elif stats['gpu_ratio'] < 0.2:

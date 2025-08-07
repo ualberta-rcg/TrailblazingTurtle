@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'notes',
 
     'jobstats',
-    #'accountstats',
+    'accountstats',
     #'cloudstats',
     # 'quotas',
     'top',
-    #'usersummary',
+    'usersummary',
     'nodes',
 
     'ccldap',
@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Edmonton'
 
 USE_I18N = True
 
