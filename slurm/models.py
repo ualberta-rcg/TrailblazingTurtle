@@ -16,32 +16,75 @@ from userportal.common import uid_to_username
 RE_DEPS = re.compile(r'(--depend=|--dependency=|-d )(afterok|afterany|afterburstbuffer|aftercorr|afternotok|after):([:\d]+)')
 
 
-# from https://github.com/NERSC/slurm-helpers/blob/master/slurm_utils.py
+# Adapted from https://github.com/NERSC/slurm-helpers/blob/master/slurm_utils.py
 def expand_nodelist(nlist: str, as_list=False) -> str:
     """ translate a nodelist like 'nid[02516-02575,02580-02635,02836]' into a
         list of explicitly-named nodes, eg 'nid02516 nid02517 ...'
     """
-    nodes = []
+    def split_top_level_commas(s: str):
+        parts, buf, depth = [], [], 0
+        for ch in s:
+            if ch == '[':
+                depth += 1
+            elif ch == ']':
+                depth -= 1
+            if ch == ',' and depth == 0:
+                parts.append(''.join(buf))
+                buf = []
+            else:
+                buf.append(ch)
+        parts.append(''.join(buf))
+        return [p for p in parts if p]
+
+    def expand_first_bracket(s: str):
+        # Returns list of strings by expanding the first bracket expression
+        if '[' not in s:
+            return [s]
+        start = s.index('[')
+        # find matching closing bracket
+        depth = 0
+        end = None
+        for i in range(start, len(s)):
+            if s[i] == '[':
+                depth += 1
+            elif s[i] == ']':
+                depth -= 1
+                if depth == 0:
+                    end = i
+                    break
+        if end is None:
+            raise Exception("Incomplete nodelist: {}".format(s))
+        prefix = s[:start]
+        inside = s[start + 1:end]
+        suffix = s[end + 1:]
+        values = []
+        for component in inside.split(','):
+            first, sep, last = component.partition('-')
+            if sep:
+                width = len(first)
+                a, b = int(first), int(last)
+                step = 1 if a <= b else -1
+                for i in range(a, b + step, step):
+                    values.append(f"{i:0{width}d}")
+            else:
+                values.append(first)
+        expanded = []
+        for v in values:
+            for tail in expand_first_bracket(suffix):
+                expanded.append(prefix + v + tail)
+        return expanded
+
     if nlist.count('[') != nlist.count(']'):
         raise Exception("Incomplete nodelist: {}".format(nlist))
-    prefix, sep0, nl = nlist.partition('[')
-    if sep0:
-        for component in nl.rstrip(']').split(','):
-            first, sep1, last = component.partition('-')
-            width = '0{:d}'.format(len(first))
-            if sep1:
-                nodes += ['{0:s}{2:{1:s}d}'.format(prefix, width, i)
-                          for i in range(int(first), int(last) + 1)]
-            else:
-                print(nlist)
-                nodes += ['{0:s}{2:{1:s}d}'.format(prefix, width, int(first))]
-    else:
-        nodes += [prefix]
+
+    nodes = []
+    # Split on top-level commas to support lists like "rack08-[...],rack09-02"
+    for part in split_top_level_commas(nlist):
+        nodes.extend(expand_first_bracket(part))
+
     if as_list:
         return nodes
-    else:
-        return ' '.join(nodes)
-
+    return ' '.join(nodes)
 
 class AcctCoordTable(models.Model):
     creation_time = models.PositiveBigIntegerField()
