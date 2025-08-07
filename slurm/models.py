@@ -33,6 +33,7 @@ def expand_nodelist(nlist: str, as_list=False) -> str:
                 nodes += ['{0:s}{2:{1:s}d}'.format(prefix, width, i)
                           for i in range(int(first), int(last) + 1)]
             else:
+                print(nlist)
                 nodes += ['{0:s}{2:{1:s}d}'.format(prefix, width, int(first))]
     else:
         nodes += [prefix]

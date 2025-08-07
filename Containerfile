@@ -29,7 +29,7 @@ RUN patch /opt/userportal-env/lib/python3.12/site-packages/django/db/backends/ba
 
 RUN /opt/userportal-env/bin/python manage.py collectstatic --noinput && /opt/userportal-env/bin/python manage.py compilemessages
 
-RUN apt remove -y automake autoconf libtool libtool-bin gcc libltdl-dev libxml2-dev libxslt1-dev libssl-dev libnspr4-dev libnss3-dev libgcrypt20-dev help2man man2html gtk-doc-tools build-essential git && apt autoremove -y && apt update -y && apt install -y mariadb-client sssd && apt clean
+RUN apt update -y && apt remove -y automake autoconf libtool libtool-bin gcc libltdl-dev libxml2-dev libxslt1-dev libssl-dev libnspr4-dev libnss3-dev libgcrypt20-dev help2man man2html gtk-doc-tools build-essential git && apt autoremove -y && apt install -y mariadb-client sssd && apt clean
 
 EXPOSE 8000
 CMD ["./run-django-production.sh"]
