@@ -200,4 +200,4 @@ REST_FRAMEWORK = {
 CSP_DEFAULT_SRC = ("'self'")
 CSP_IMG_SRC = ("'self'", "data:", 'object-arbutus.cloud.computecanada.ca')
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", 'cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'cdn.datatables.net')
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", 'cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'cdn.datatables.net', 'code.jquery.com', 'cdn.plot.ly')
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", 'cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'cdn.datatables.net', 'code.jquery.com', 'cdn.plot.ly', 'www.googletagmanager.com')

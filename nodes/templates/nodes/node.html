@@ -61,8 +61,10 @@
 <h2>{% translate "Network" %}</h2>
 <h3>{% translate "Ethernet" %}</h3>
 <div id="graph_ethernet_bdw"></div>
+{% if ib %}
 <h3>{% translate "Infiniband" %}</h3>
 <div id="graph_infiniband_bdw"></div>
+{% endif %}
 
 {% if gpu %}
 <h2>{% translate "Gpus" %}</h2>

@@ -573,7 +573,6 @@ def graph_cpu(request, username, job_id):
     context = context_job_info(request, username, job_id)
 
     query = 'rate(slurm_job_core_usage_total{{slurmjobid=~"{}", {}}}[{}s]) / 1000000000'.format(context['id_regex'], prom.get_filter(), prom.rate('slurm-job-exporter'))
-    print(query)
     stats = prom.query_prometheus_multiple(
         query,
         context['start'],
@@ -1778,7 +1777,6 @@ def graph_cache_rate(request, username, job_id, l_cache):
         instances=instances,
         filter=prom.get_filter(),
         rate=prom.rate('pcm-sensor-server'))
-    print(query_cache)
     stats_cache = prom.query_prometheus_multiple(
         query_cache,
         context['start'],
@@ -1912,6 +1910,8 @@ def power(job, step):
             domain=settings.HOSTNAME_DOMAIN,
             prom_metric_chassis_power_avg=settings.PROM_METRIC_CHASSIS_POWER_AVG_CONSUMED_WATTS,
         )
+
+    print(query)
     return prom.query_prometheus_multiple(query, job.time_start_dt(), job.time_end_dt(), step)
 
 

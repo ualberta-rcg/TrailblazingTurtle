@@ -9,13 +9,13 @@ EXPORTER_INSTALLED = [
 ]
 
 EXPORTER_SAMPLING_RATE = {
-    'slurm-job-exporter': 30,
-    'node_exporter': 30,
+    'slurm-job-exporter': 90,
+    'node_exporter': 90,
     'redfish_exporter': 90,
     'lustre_exporter': 90,
-    'slurm_exporter': 60,
-    'pcm-sensor-server': 30,
-    'libvirtd_exporter': 30,
+    'slurm_exporter': 90,
+    'pcm-sensor-server': 90,
+    'libvirtd_exporter': 90,
 }
 
 CLUSTER_NAME = 'vulcan'  # used for slurm stats
@@ -88,8 +88,8 @@ CLOUD_ALLOCATIONS_FILE = '/var/www/userportal/projects-rac2022.yml'
 #EXTERNAL_LINKS = []
 EXTERNAL_LINKS = [
     {'name': 'Documentation', 'url': 'https://docs.alliancecan.ca/wiki/Vulcan', 'icon': 'book'},
-#    {'name': 'Globus', 'url': 'https://app.globus.org/file-manager?origin_id=a1713da6-098f-40e6-b3aa-034efe8b6e5b', 'icon': 'globe'},
-#    {'name': 'JupyterHub', 'url': 'https://jupyter.vulcan.alliancecan.ca', 'icon': 'terminal'},
+    {'name': 'Globus', 'url': 'https://app.globus.org/file-manager?origin_id=97bda3da-a723-4dc0-ba7e-728f35183b43', 'icon': 'globe'},
+    {'name': 'Open OnDemand', 'url': 'https://vulcan.alliancecan.ca', 'icon': 'terminal'},
 ]
 
 # Links to other portals, under external links. 

@@ -149,6 +149,13 @@ def node(request, node):
     stats_gpu = prom.query_prometheus_multiple(query_gpu, START, END)
     context['gpu'] = len(stats_gpu) > 0
 
+    query = 'count(node_infiniband_port_data_received_bytes_total{{{hostname_label}=~"{node}(:.*)", {filter}}})'.format(
+            hostname_label=settings.PROM_NODE_HOSTNAME_LABEL,
+            node=node,
+            filter=prom.get_filter())
+    stats_ib = prom.query_prometheus_multiple(query, START, END)
+    context['ib'] = len(stats_ib) > 0
+
     context['node_events'] = []
     try:
         start = START.timestamp()
