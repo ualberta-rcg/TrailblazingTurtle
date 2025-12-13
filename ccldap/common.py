@@ -39,13 +39,11 @@ def convert_ldap_to_allocation(ldap_object):
                 has_resources = True
                 # For RGU-based allocations, we don't have a specific GPU count,
                 # but we still want to show it as a GPU account
-                computes.append({
-                    'name': alloc.name + '_gpu',
-                    'gpu': None,  # RGU allocation doesn't specify exact GPU count
-                })
+                # Only add the base account name, not the suffixed version,
+                # since RGU allocations don't create separate _gpu accounts
                 computes.append({
                     'name': alloc.name,
-                    'gpu': None,
+                    'gpu': None,  # RGU allocation doesn't specify exact GPU count
                 })
 
         # Add account even if it has no resources, so it appears in the list
