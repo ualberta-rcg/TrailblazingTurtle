@@ -9,9 +9,11 @@ def convert_ldap_to_allocation(ldap_object):
             continue
 
         resources = alloc.parse_active_resources()
+        has_resources = False
 
         for resource in resources:
             if 'cpu' in resource:
+                has_resources = True
                 computes.append({
                     'name': alloc.name + '_cpu',
                     'cpu': resource['cpu'],
@@ -22,6 +24,7 @@ def convert_ldap_to_allocation(ldap_object):
                     'cpu': resource['cpu'],
                 })
             if 'gpu' in resource:
+                has_resources = True
                 computes.append({
                     'name': alloc.name + '_gpu',
                     'gpu': resource['gpu'],
@@ -31,6 +34,26 @@ def convert_ldap_to_allocation(ldap_object):
                     'name': alloc.name,
                     'gpu': resource['gpu'],
                 })
+            # Handle GPU resources specified as gpu_rgu_years (RGU allocation)
+            elif 'gpu_rgu_years' in resource:
+                has_resources = True
+                # For RGU-based allocations, we don't have a specific GPU count,
+                # but we still want to show it as a GPU account
+                computes.append({
+                    'name': alloc.name + '_gpu',
+                    'gpu': None,  # RGU allocation doesn't specify exact GPU count
+                })
+                computes.append({
+                    'name': alloc.name,
+                    'gpu': None,
+                })
+
+        # Add account even if it has no resources, so it appears in the list
+        if not has_resources:
+            computes.append({
+                'name': alloc.name,
+                'cpu': None,
+            })
 
     return computes
 
