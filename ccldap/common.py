@@ -4,8 +4,12 @@ from ccldap.models import LdapAllocation
 def convert_ldap_to_allocation(ldap_object):
     computes = []
     for alloc in ldap_object:
+        # Ignore def- accounts
+        if alloc.name.startswith('def-'):
+            continue
+
         resources = alloc.parse_active_resources()
-        
+
         for resource in resources:
             if 'cpu' in resource:
                 computes.append({
@@ -27,25 +31,7 @@ def convert_ldap_to_allocation(ldap_object):
                     'name': alloc.name,
                     'gpu': resource['gpu'],
                 })
-        
-        # Handle def- accounts (default accounts without specific resource allocations)
-        if alloc.name.startswith('def-'):
-            computes.append({
-                'name': alloc.name + '_cpu',
-                'cpu': None,
-            })
-            computes.append({
-                'name': alloc.name + '_gpu',
-                'gpu': None,
-            })
-            computes.append({
-                'name': alloc.name,
-                'cpu': None,
-            })
-            computes.append({
-                'name': alloc.name,
-                'gpu': None,
-            })
+
     return computes
 
 
