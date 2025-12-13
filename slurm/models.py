@@ -116,14 +116,16 @@ class AssocTable(models.Model):
     creation_time = models.PositiveBigIntegerField()
     mod_time = models.PositiveBigIntegerField()
     deleted = models.IntegerField()
+    comment = models.TextField(blank=True, null=True)
+    flags = models.PositiveIntegerField()
     is_def = models.IntegerField()
     id_assoc = models.AutoField(primary_key=True)
     user = models.TextField()
     acct = models.TextField()
     partition = models.TextField()
     parent_acct = models.TextField()
-    lft = models.IntegerField()
-    rgt = models.IntegerField()
+    id_parent = models.PositiveIntegerField()
+    lineage = models.TextField(blank=True, null=True)
     shares = models.IntegerField()
     max_jobs = models.IntegerField(blank=True, null=True)
     max_jobs_accrue = models.IntegerField(blank=True, null=True)
@@ -143,8 +145,10 @@ class AssocTable(models.Model):
     grp_wall = models.IntegerField(blank=True, null=True)
     priority = models.PositiveIntegerField(blank=True, null=True)
     def_qos_id = models.IntegerField(blank=True, null=True)
-    qos = models.TextField()
-    delta_qos = models.TextField()
+    # Slurm stores QoS data as blobs in the accounting DB (e.g. MySQL BLOB).
+    # Use BinaryField to avoid unicode decoding issues.
+    qos = models.BinaryField()
+    delta_qos = models.BinaryField()
 
     class Meta:
         managed = False

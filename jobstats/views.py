@@ -2020,9 +2020,9 @@ class JobsViewSet(viewsets.ReadOnlyModelViewSet):
         if self.request.query_params.get('account'):
             account = self.request.query_params.get('account')
             # jobtable is not indexed by account, so we need to get assocs for this account, that one is indexed
-            assocs = []
-            for assoc in AssocTable.objects.filter(acct=account):
-                assocs.append(assoc.id_assoc)
+            # NOTE: Some Slurm accounting DB schemas may not have all columns we model (e.g. lft/rgt).
+            # We only need id_assoc here, so fetch just that field to avoid selecting missing columns.
+            assocs = list(AssocTable.objects.filter(acct=account).values_list('id_assoc', flat=True))
             queryset = queryset.filter(id_assoc__in=assocs)
 
             if user.is_staff is False:
