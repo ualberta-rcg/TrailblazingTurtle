@@ -86,6 +86,7 @@ def expand_nodelist(nlist: str, as_list=False) -> str:
         return nodes
     return ' '.join(nodes)
 
+
 class AcctCoordTable(models.Model):
     creation_time = models.PositiveBigIntegerField()
     mod_time = models.PositiveBigIntegerField()

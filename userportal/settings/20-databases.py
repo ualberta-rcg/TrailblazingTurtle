@@ -26,9 +26,9 @@ DATABASES = {
     },
     'ldap': {
         'ENGINE': 'ldapdb.backends.ldap',
-        'NAME': 'ldaps://lproxy01',
-        'USER': 'cn=ldapuser,dc=computecanada,dc=ca',
-        'PASSWORD': 'changeme',
+        'NAME': os.environ.get('LDAP_SERVER'),
+        'USER': os.environ.get('LDAP_USER'),
+        'PASSWORD': os.environ.get('LDAP_PASS'),
     },
 }
 
