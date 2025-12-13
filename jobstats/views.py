@@ -1899,7 +1899,7 @@ def power(job, step):
         # ( take the node power)
         # * (the ratio of cpu cores allocated in that node)
         nodes_node_exporter = '|'.join([s + settings.HOSTNAME_DOMAIN + '(:.*)?' for s in nodes])
-        query = '(label_replace(sum({prom_metric_chassis_power_avg}{{{hostname_label}=~"({nodes}){oob_suffix}{domain}", {filter} }}) by ({hostname_label}), "{hostname_label}", "$1", "{hostname_label}", "(.*){oob_suffix}{domain}") ) \
+        query = '(label_replace(sum({prom_metric_chassis_power_avg}{{{hostname_label}=~"({nodes}){oob_suffix}{domain}", {filter} }}) by ({hostname_label}), "{hostname_label}", "$1{domain}", "{hostname_label}", "(.*){oob_suffix}{domain}") ) \
             * ( label_replace(count(slurm_job_core_usage_total{{slurmjobid="{jobid}", {filter}}} / 1000) by ({hostname_label}),"{hostname_label}", "$1", "{hostname_label}", "(.*){domain}:.*") / label_replace((count(node_cpu_seconds_total{{{hostname_label}=~"({nodes_node_exporter})", mode="idle", {filter}}} / 1000) by ({hostname_label})), "{hostname_label}", "$1", "{hostname_label}", "(.*){domain}:.*") )'.format(
             hostname_label=settings.PROM_NODE_HOSTNAME_LABEL,
             nodes='|'.join(nodes),
