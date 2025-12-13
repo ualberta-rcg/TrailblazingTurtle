@@ -5,10 +5,16 @@ def convert_ldap_to_allocation(ldap_object):
     computes = []
     for alloc in ldap_object:
         resources = alloc.parse_active_resources()
+        
         for resource in resources:
             if 'cpu' in resource:
                 computes.append({
                     'name': alloc.name + '_cpu',
+                    'cpu': resource['cpu'],
+                })
+                # Also add base account name for CPU to match Slurm accounts without suffixes
+                computes.append({
+                    'name': alloc.name,
                     'cpu': resource['cpu'],
                 })
             if 'gpu' in resource:
@@ -16,15 +22,30 @@ def convert_ldap_to_allocation(ldap_object):
                     'name': alloc.name + '_gpu',
                     'gpu': resource['gpu'],
                 })
-            if alloc.name.startswith('def-'):
+                # Also add base account name for GPU to match Slurm accounts without suffixes
                 computes.append({
-                    'name': alloc.name + '_cpu',
-                    'cpu': None,
+                    'name': alloc.name,
+                    'gpu': resource['gpu'],
                 })
-                computes.append({
-                    'name': alloc.name + '_gpu',
-                    'gpu': None,
-                })
+        
+        # Handle def- accounts (default accounts without specific resource allocations)
+        if alloc.name.startswith('def-'):
+            computes.append({
+                'name': alloc.name + '_cpu',
+                'cpu': None,
+            })
+            computes.append({
+                'name': alloc.name + '_gpu',
+                'gpu': None,
+            })
+            computes.append({
+                'name': alloc.name,
+                'cpu': None,
+            })
+            computes.append({
+                'name': alloc.name,
+                'gpu': None,
+            })
     return computes
 
 
