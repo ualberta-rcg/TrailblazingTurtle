@@ -22,6 +22,7 @@ def cpu_count(node):
         node=node,
         filter=prom.get_filter())
     stats = prom.query_prometheus_multiple(query, START, END, step="5m")
+    print(query)
     return int(max(stats[0]['y']))
 
 

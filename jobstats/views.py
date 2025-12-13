@@ -45,7 +45,7 @@ GPU_MEMORY = {
     '7g.80gb': 80,
 }
 GPU_FULL_POWER = {
-    'NVIDIA L40S': 350,
+    'NVIDIA L40S': 400,
     'Tesla V100-SXM2-16GB': 300,
     'NVIDIA A100-SXM4-40GB': 400,
     'NVIDIA A100 80GB PCIe': 300,

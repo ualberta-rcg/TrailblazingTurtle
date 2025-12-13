@@ -393,7 +393,7 @@ def graph_scheduler_cpu_gpu(request, res_type='cpu'):
             filter=prom.get_filter(),
         )
     else:
-        query_used = 'sum(slurm_job:used_gpu:sum{{ {filter} }})'.format(
+        query_used = 'max(slurm_job:used_gpu:sum{{ {filter} }})'.format(
             filter=prom.get_filter(),
         )
 
@@ -442,7 +442,7 @@ def graph_scheduler_cpu_gpu(request, res_type='cpu'):
     })
 
     if res_type == 'gpu':
-        query_non_idle = 'sum(slurm_job:non_idle_gpu:sum_user_account{{ {filter} }})'.format(
+        query_non_idle = 'sum(max by (user) (slurm_job:non_idle_gpu:sum_user_account{{ {filter} }}))'.format(
             filter=prom.get_filter(),
         )
         stats_non_idle = prom.query_prometheus(
