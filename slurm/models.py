@@ -440,10 +440,21 @@ class JobTable(models.Model):
     # jobs that depend on this job
     def depends_on_this(self):
         deps = []
-        # basic filtering with a regex in the database
-        jobs = JobTable.objects\
-            .filter(submit_line__regex='.*{}.*'.format(self.id_job))\
+        # Coarse pre-filter before parsing dependencies in Python.
+        #
+        # IMPORTANT: Do NOT use Django's `__regex` lookup here. On MySQL 8 this
+        # translates to `REGEXP` and can hit:
+        #   (3699) Timeout exceeded in regular expression match.
+        #
+        # A simple substring match (`LIKE`) is cheaper and avoids MySQL's regex
+        # execution limits. We still fully validate by parsing dependencies
+        # below, so false-positives are safe (only cost extra parsing).
+        job_id = str(self.id_job)
+        jobs = (
+            JobTable.objects
             .filter(id_user=self.id_user)
+            .filter(submit_line__contains=f":{job_id}")
+        )
         for job in jobs:
             for depend in job.parse_deps(job.submit_line):
                 # found a dependency on this job
