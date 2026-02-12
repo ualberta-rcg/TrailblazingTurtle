@@ -231,14 +231,14 @@ class Prometheus:
     def __init__(self, config):
         # Create a custom session with a larger connection pool
         session = requests.Session()
-        
+
         # Configure retry strategy
         retry_strategy = Retry(
             total=3,
             backoff_factor=1,
             status_forcelist=[429, 500, 502, 503, 504],
         )
-        
+
         # Create adapter with increased connection pool size
         # maxsize: maximum number of connections to save in the pool
         # block: if True, wait for a connection instead of creating a new one
@@ -248,20 +248,20 @@ class Prometheus:
             max_retries=retry_strategy,
             pool_block=False      # Don't block if pool is full, create new connection
         )
-        
+
         session.mount('http://', adapter)
         session.mount('https://', adapter)
-        
+
         # Set headers on the session
         if config.get('headers'):
             session.headers.update(config['headers'])
-        
+
         # Initialize PrometheusConnect
         self.prom = PrometheusConnect(
             url=config['url'],
             headers=config.get('headers', {}),
             disable_ssl=False)
-        
+
         # Replace the internal session with our custom one that has a larger connection pool
         # PrometheusConnect uses a session internally for making HTTP requests
         if hasattr(self.prom, '_session'):
@@ -275,7 +275,7 @@ class Prometheus:
             if original_get is None:
                 # Store our session for potential manual use if needed
                 self._custom_session = session
-        
+
         self.filter = {'default': ''} | config.get('filter', {})
 
     def get_filter(self, module='default'):
