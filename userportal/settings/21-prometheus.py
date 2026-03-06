@@ -1,10 +1,10 @@
 import os
 PROMETHEUS = {
-        'url': 'http://' + os.environ.get('PROMETHEUS_LOC', 'rancher-monitoring-prometheus.cattle-monitoring-system.svc.vulcan.local:9090'),
+        'url': 'http://' + os.environ.get('PROMETHEUS_LOC', 'rancher-monitoring-prometheus.cattle-monitoring-system.svc.cluster.local:9090'),
     'headers': {},
     #'headers': {'Authorization': 'Basic changeme_base64'},
     'filter': {
-        'default': "cluster='vulcan'",
+        'default': "cluster='eureka'",
 #        'cloudstats': "cluster='narval', instance=~'blg.*'" # example to override the default filter for a specific module
     },
 }
