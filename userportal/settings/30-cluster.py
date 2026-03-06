@@ -94,7 +94,9 @@ EXTERNAL_LINKS = [
 
 # Links to other portals, under external links. 
 # The path parameter enable compatibility with other portals by sending the user to the same page in the other portal
-OTHER_PORTALS = []
+OTHER_PORTALS = [
+    {'name': 'tamIA', 'url': 'https://portail.tamia.ecpia.ca/', 'path': True},
+]
 #OTHER_PORTALS = [
 #    {'name': 'Beluga', 'url': 'https://portail.beluga.calculquebec.ca', 'path': True},
 #    {'name': 'Graham', 'url': 'https://dashboard.graham.sharcnet.ca', 'path': True},
