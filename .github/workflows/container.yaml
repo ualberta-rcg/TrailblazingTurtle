@@ -21,7 +21,7 @@ jobs:
       uses: redhat-actions/buildah-build@v2
       with:
         image: ${{ env.IMAGE_NAME }}
-        tags: vulcan
+        tags: ${{ github.ref_name }}
         containerfiles: |
           ./Containerfile
 
@@ -37,5 +37,5 @@ jobs:
       uses: redhat-actions/push-to-registry@v2
       with:
         image: ${{ steps.build-image.outputs.image }}
-        tags: vulcan
+        tags: ${{ steps.build-image.outputs.tags }}
         registry: ${{ env.REGISTRY }}
