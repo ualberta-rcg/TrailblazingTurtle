@@ -621,7 +621,8 @@ def graph_cpu(request, username, job_id):
             'hovertemplate': '%{y:.1f}',
         })
     else:
-        layout['yaxis']['range'] = [0, context['job'].parse_tres_req()['total_cores']]
+        allocated_cores = max(context['job'].parse_tres_req()['total_cores'], len(stats))
+        layout['yaxis']['range'] = [0, allocated_cores]
 
     return JsonResponse({'data': data, 'layout': layout, 'config': fixed_zoom_config()})
 

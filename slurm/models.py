@@ -396,6 +396,8 @@ class JobTable(models.Model):
 
     def parse_tres_req(self):
         info = {}
+        alloc_info = {}
+
         for item in self.tres_req.split(','):
             key, value = item.split('=')
             if key == '1':
@@ -405,10 +407,27 @@ class JobTable(models.Model):
             elif key == '4':
                 info['nb_nodes'] = int(value)
 
-        # Sometime the total_mem is not in TRES, so we use the other column
-        # in the DB
+        for item in self.tres_alloc.split(','):
+            key, value = item.split('=')
+            if key == '1':
+                alloc_info['total_cores'] = int(value)
+            elif key == '2':
+                alloc_info['total_mem'] = int(value)
+            elif key == '4':
+                alloc_info['nb_nodes'] = int(value)
+
+        # For exclusive jobs, Slurm can allocate a full node while TRES request
+        # still reports only task CPUs. Use the effective allocated value.
+        info['total_cores'] = max(
+            info.get('total_cores', self.cpus_req),
+            alloc_info.get('total_cores', 0))
+        info['nb_nodes'] = max(
+            info.get('nb_nodes', self.nodes_alloc),
+            alloc_info.get('nb_nodes', 0))
+
+        # Sometimes memory is missing from TRES, so fallback to DB column.
         if 'total_mem' not in info:
-            info['total_mem'] = self.mem_req
+            info['total_mem'] = alloc_info.get('total_mem', self.mem_req)
         return info
 
     def nodes(self):
