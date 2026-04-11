@@ -347,7 +347,7 @@
     </tr>
     {% if gpu_count > 0 %}
     <tr>
-      <td>{% translate "GPUs per node" %}</td>
+      <td>{% translate "GPUs" %}</td>
       <td>{{gpu_count}}x {{job.gpu_type}}</td>
       <td>{% translate "Cycles" %}: {{gpu_used | floatformat:-2 }}%, {% translate "Memory" %}: {{gpu_mem | floatformat:-2 }}%, {% translate "Power" %}: {{gpu_power | floatformat:-2 }}%</td>
     </tr>
@@ -523,41 +523,56 @@
   {% endif %}
 
   {% if 'pcm-sensor-server' in settings.EXPORTER_INSTALLED %}
-  <div class="row">
-    <div class="col-sm-6">
-      <div id="l2" class="card {{graph_div.l2}}">
-        <div class="card-body">
-          <h3 class="card-title">{% translate "L2 cache hit rate" %}</h3>
-          <p class="card-text">
-            <div>
-              <div id="graph_l2_rate"></div>
-            </div>
-          </p>
-        </div>
+  <div class="accordion mb-3" id="accordionLessRelevantPlots">
+    <div class="card">
+      <div class="card-header" id="headingLessRelevantPlots">
+        <h2 class="mb-0">
+          <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseLessRelevantPlots" aria-expanded="false" aria-controls="collapseLessRelevantPlots">
+            {% translate "Less relevant plots" %}
+          </button>
+        </h2>
       </div>
-    </div>
-    <div class="col-sm-6">
-      <div id="l3" class="card {{graph_div.l3}}">
+      <div id="collapseLessRelevantPlots" class="collapse" aria-labelledby="headingLessRelevantPlots" data-parent="#accordionLessRelevantPlots">
         <div class="card-body">
-          <h3 class="card-title">{% translate "L3 cache hit rate" %}</h3>
-          <p class="card-text">
-            <div>
-              <div id="graph_l3_rate"></div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div id="l2" class="card {{graph_div.l2}}">
+                <div class="card-body">
+                  <h3 class="card-title">{% translate "L2 cache hit rate" %}</h3>
+                  <p class="card-text">
+                    <div>
+                      <div id="graph_l2_rate"></div>
+                    </div>
+                  </p>
+                </div>
+              </div>
             </div>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+            <div class="col-sm-6">
+              <div id="l3" class="card {{graph_div.l3}}">
+                <div class="card-body">
+                  <h3 class="card-title">{% translate "L3 cache hit rate" %}</h3>
+                  <p class="card-text">
+                    <div>
+                      <div id="graph_l3_rate"></div>
+                    </div>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-  <div id="ipc" class="card {{graph_div.ipc}}">
-    <div class="card-body">
-      <h3 class="card-title">{% translate "Instructions per cycle" %}</h3>
-      <p class="card-text">
-        <div>
-          <div id="graph_ipc"></div>
+          <div id="ipc" class="card {{graph_div.ipc}}">
+            <div class="card-body">
+              <h3 class="card-title">{% translate "Instructions per cycle" %}</h3>
+              <p class="card-text">
+                <div>
+                  <div id="graph_ipc"></div>
+                </div>
+              </p>
+            </div>
+          </div>
         </div>
-      </p>
+      </div>
     </div>
   </div>
   {% endif %}
