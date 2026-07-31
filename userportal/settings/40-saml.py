@@ -1,6 +1,9 @@
 # SAML2 settings
+import copy
+
 import saml2
 import saml2.saml
+from saml2.config import SPConfig
 
 # These variables are defined in 10-base.py
 INSTALLED_APPS += ['djangosaml2']
@@ -14,10 +17,19 @@ LOGIN_URL = '/saml2/login/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SAML_CREATE_UNKNOWN_USER = True
 
+# Hosts that this app is served on. Each one is registered as its own SP
+# entity with the IdP, so users stay on whichever host they arrived on.
+SAML_HOSTS = [
+    'portal.vulcan.alliancecan.ca',
+    'metrix.vulcan.alliancecan.ca',
+]
+
+# Base pysaml2 config. Host-specific values (entityid, ACS URL) are filled
+# in by saml_config_loader below based on the incoming request's host.
 SAML_CONFIG = {
     'debug': 1,
     'xmlsec_binary': '/usr/local/bin/xmlsec1',
-    'entityid': 'https://portal.vulcan.alliancecan.ca/saml2/metadata/',
+    # entityid and assertion_consumer_service are set per-host in the loader
     'allow_unknown_attributes': True,
 
     'service': {
@@ -27,9 +39,7 @@ SAML_CONFIG = {
             'name_id_format_allow_create': True,
 
             'endpoints': {
-                'assertion_consumer_service': [
-                    ('https://portal.vulcan.alliancecan.ca/saml2/acs/', saml2.BINDING_HTTP_POST),
-                ],
+                # assertion_consumer_service is set per-host in the loader
             },
 
             'signing_algorithm': saml2.xmldsig.SIG_RSA_SHA256,
@@ -65,3 +75,43 @@ SAML_CONFIG = {
         'cert_file': '/opt/idp/public.cert',  # public part
     }],
 }
+
+
+def saml_config_loader(request=None):
+    """Build a pysaml2 SPConfig whose entityid and ACS URL match the host
+    the user actually arrived on, so SAML login/ACS stays on the same
+    origin the user is browsing.
+
+    Each host in SAML_HOSTS must be registered as its own SP entity with
+    the IdP (entityid = https://<host>/saml2/metadata/, ACS =
+    https://<host>/saml2/acs/).
+    """
+    host = None
+    if request is not None:
+        host = request.get_host().split(':', 1)[0]
+
+    if host not in SAML_HOSTS:
+        # Fall back to the first configured host. This only affects
+        # hostless contexts (e.g. management commands); real requests
+        # always carry a known host.
+        host = SAML_HOSTS[0]
+
+    config = copy.deepcopy(SAML_CONFIG)
+    config['entityid'] = f'https://{host}/saml2/metadata/'
+    config['service']['sp']['endpoints']['assertion_consumer_service'] = [
+        (f'https://{host}/saml2/acs/', saml2.BINDING_HTTP_POST),
+    ]
+
+    sp_config = SPConfig()
+    sp_config.load(config)
+    return sp_config
+
+
+# Tell djangosaml2 to use our host-aware loader instead of the default
+# static one in djangosaml2.conf.config_settings_loader.
+#
+# Note: userportal/settings.py execs each settings/*.py file into the
+# userportal.settings namespace, so the loader is importable as
+# userportal.settings.saml_config_loader (not userportal.settings.40-saml,
+# which is not a valid module name).
+SAML_CONFIG_LOADER = 'userportal.settings.saml_config_loader'
