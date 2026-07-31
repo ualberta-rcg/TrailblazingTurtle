@@ -235,6 +235,30 @@ def display_gpu_id(line):
         return int(line['metric']['gpu'])
 
 
+def get_job_allocated_cores(job, start=None, end=None):
+    requested_cores = job.parse_tres_req()['total_cores']
+    if start is None:
+        start = job.time_start_dt()
+    if end is None:
+        end = job.time_end_dt() or datetime.now()
+
+    # If the job has not started yet, we only have the requested cores.
+    if start is None:
+        return requested_cores
+
+    try:
+        query_count = 'count(slurm_job_core_usage_total{{slurmjobid="{}", {}}})'.format(job.id_job, prom.get_filter())
+        line = prom.query_prometheus(
+            query_count,
+            start,
+            end,
+            step=max(get_step(start, end), prom.rate('slurm-job-exporter')))
+        observed_cores = int(max(line[1]))
+        return max(requested_cores, observed_cores)
+    except (ValueError, IndexError, TypeError):
+        return requested_cores
+
+
 @login_required
 def index(request):
     return redirect('{}/'.format(request_to_username(request)))
@@ -307,6 +331,7 @@ def job(request, username, job_id):
         context['notes'] = Note.objects.filter(Q(username=username) | Q(job_id=job_id)).filter(deleted_at=None).order_by('-modified_at')
 
     context['tres_req'] = job.parse_tres_req()
+    context['allocated_cores'] = context['tres_req']['total_cores']
     context['total_mem'] = context['tres_req']['total_mem'] * 1024 * 1024
 
     comments = []
@@ -393,9 +418,12 @@ def job(request, username, job_id):
         cpu_bynode = []
         for node in stats_cpu_bynode:
             node_name = node['metric'][settings.PROM_NODE_HOSTNAME_LABEL].split(':')[0]
-            cpu_bynode.append({'name': node_name, 'count': int(node['y'][0])})
+            cpu_bynode.append({'name': node_name, 'count': int(max(node['y']))})
         context['cpu_bynode'] = cpu_bynode
         context['nb_nodes'] = len(cpu_bynode)
+        observed_cores = sum(node['count'] for node in cpu_bynode)
+        context['allocated_cores'] = max(context['allocated_cores'], observed_cores)
+        context['tres_req']['total_cores'] = context['allocated_cores']
     except ValueError:
         context['cpu_bynode'] = None
         context['nb_nodes'] = None
@@ -621,7 +649,7 @@ def graph_cpu(request, username, job_id):
             'hovertemplate': '%{y:.1f}',
         })
     else:
-        layout['yaxis']['range'] = [0, context['job'].parse_tres_req()['total_cores']]
+        layout['yaxis']['range'] = [0, get_job_allocated_cores(context['job'], context['start'], context['end'])]
 
     return JsonResponse({'data': data, 'layout': layout, 'config': fixed_zoom_config()})
 
@@ -718,6 +746,7 @@ def graph_mem(request, username, job_id):
     context = context_job_info(request, username, job_id)
 
     data = []
+    maximum = 0
 
     stat_types = [
         ('slurm_job_memory_usage', _('Used')),
@@ -761,7 +790,7 @@ def graph_mem(request, username, job_id):
             if context['multiple_jobs']:
                 info['stackgroup'] = 'one'
             data.append(info)
-        if stat[0] == 'slurm_job_memory_limit':
+        if stat[0] == 'slurm_job_memory_limit' and stats:
             maximum = max(max(map(lambda x: x['y'], stats)))
 
     if context['multiple_jobs']:
@@ -780,7 +809,8 @@ def graph_mem(request, username, job_id):
             'name': _('Allocated memory'),
             'hovertemplate': '%{y:.1f}',
         })
-        maximum = max(y)
+        if y:
+            maximum = max(y)
 
     layout = {
         'yaxis': {
@@ -1986,10 +2016,11 @@ def value_cost(request, username, job_id):
             response['cloud_cost_dollar'] = job.gpu_count() * settings.CLOUD_GPU_COST_PER_HOUR * hours
     else:
         # Cost for a CPU job
+        allocated_cores = get_job_allocated_cores(job)
         if settings.CPU_CORE_COST_PER_HOUR:
-            response['hardware_cost_dollar'] = job.parse_tres_req()['total_cores'] * settings.CPU_CORE_COST_PER_HOUR * hours
+            response['hardware_cost_dollar'] = allocated_cores * settings.CPU_CORE_COST_PER_HOUR * hours
         if settings.CLOUD_CPU_CORE_COST_PER_HOUR:
-            response['cloud_cost_dollar'] = job.parse_tres_req()['total_cores'] * settings.CLOUD_CPU_CORE_COST_PER_HOUR * hours
+            response['cloud_cost_dollar'] = allocated_cores * settings.CLOUD_CPU_CORE_COST_PER_HOUR * hours
 
     return JsonResponse(response)
 
