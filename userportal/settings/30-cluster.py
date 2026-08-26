@@ -24,10 +24,13 @@ COMPUTE_NAME = 'vulcan-gpu'  # narval-compute or narval-gpu
 #LUSTRE_FS_NAMES = ['lustre05', 'lustre06', 'lustre07']
 LOGINS = {
     'vulcan1': {
-        'network_interface': 'bond0',
+        'network_interface': 'eth1',
     },
     'vulcan2': {
-        'network_interface': 'bond0',
+        'network_interface': 'eth1',
+    },
+    'vulcan3': {
+        'network_interface': 'eth1',
     },
 }
 DTNS = {
