@@ -17,19 +17,25 @@ LOGIN_URL = '/saml2/login/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SAML_CREATE_UNKNOWN_USER = True
 
-# Hosts that this app is served on. Each one is registered as its own SP
-# entity with the IdP, so users stay on whichever host they arrived on.
+# Hosts that this app is served on. All of them share a single SP entity
+# with the IdP (SAML_ENTITYID); each host just has its own ACS URL
+# registered on that entity, so users stay on whichever host they arrived on.
 SAML_HOSTS = [
     'portal.vulcan.alliancecan.ca',
     'metrix.vulcan.alliancecan.ca',
 ]
 
-# Base pysaml2 config. Host-specific values (entityid, ACS URL) are filled
-# in by saml_config_loader below based on the incoming request's host.
+# The one entityID the IdP knows us by, regardless of which host the user
+# is on. Must match the relying party registered on the IdP exactly.
+SAML_ENTITYID = 'https://portal.vulcan.alliancecan.ca/saml2/metadata/'
+
+# Base pysaml2 config. The host-specific ACS URL is filled in by
+# saml_config_loader below based on the incoming request's host.
 SAML_CONFIG = {
     'debug': 1,
     'xmlsec_binary': '/usr/local/bin/xmlsec1',
-    # entityid and assertion_consumer_service are set per-host in the loader
+    'entityid': SAML_ENTITYID,
+    # assertion_consumer_service is set per-host in the loader
     'allow_unknown_attributes': True,
 
     'service': {
@@ -78,13 +84,18 @@ SAML_CONFIG = {
 
 
 def saml_config_loader(request=None):
-    """Build a pysaml2 SPConfig whose entityid and ACS URL match the host
-    the user actually arrived on, so SAML login/ACS stays on the same
-    origin the user is browsing.
+    """Build a pysaml2 SPConfig whose ACS URL matches the host the user
+    actually arrived on, so SAML login/ACS stays on the same origin the
+    user is browsing.
 
-    Each host in SAML_HOSTS must be registered as its own SP entity with
-    the IdP (entityid = https://<host>/saml2/metadata/, ACS =
-    https://<host>/saml2/acs/).
+    The entityid is always SAML_ENTITYID (one SP entity on the IdP). The
+    IdP must have https://<host>/saml2/acs/ registered as an
+    AssertionConsumerService on that entity for every host in SAML_HOSTS.
+
+    The current host's ACS is listed first because pysaml2 puts the first
+    ACS in the AuthnRequest's AssertionConsumerServiceURL; the others are
+    included so the published metadata lists every ACS and so responses
+    posted to any of them pass pysaml2's destination check.
     """
     host = None
     if request is not None:
@@ -96,10 +107,11 @@ def saml_config_loader(request=None):
         # always carry a known host.
         host = SAML_HOSTS[0]
 
+    acs_hosts = [host] + [h for h in SAML_HOSTS if h != host]
+
     config = copy.deepcopy(SAML_CONFIG)
-    config['entityid'] = f'https://{host}/saml2/metadata/'
     config['service']['sp']['endpoints']['assertion_consumer_service'] = [
-        (f'https://{host}/saml2/acs/', saml2.BINDING_HTTP_POST),
+        (f'https://{h}/saml2/acs/', saml2.BINDING_HTTP_POST) for h in acs_hosts
     ]
 
     sp_config = SPConfig()
